@@ -61,7 +61,7 @@ function pullRandomOffer() {
   };
 }
 
-function createObj(numbers) {
+function createOfferObject(numbers) {
   for (var i = 0; i < numbers; i++) {
     offers.push(pullRandomOffer());
   }
@@ -102,5 +102,5 @@ function renderPins() {
 }
 
 blockMap.classList.remove('map--faded');
-createObj(OBJECTS_AMOUNT);
+createOfferObject(OBJECTS_AMOUNT);
 renderPins();
