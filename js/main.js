@@ -23,6 +23,13 @@ function getRandomItem(array) {
   return Math.floor(Math.random() * array.length);
 }
 
+function getRandomItemAndDel(array1) {
+  var h = Math.floor(Math.random() * (array1.length - 1));
+  var k = array1[h];
+  array1.splice(h, 1);
+  return k;
+}
+
 function getRandomFromTo(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -30,7 +37,7 @@ function getRandomFromTo(min, max) {
 function pullRandomOffer() {
   return {
     author: {
-      avatar: AVATAR_OF_AUTHORS[getRandomItem(AVATAR_OF_AUTHORS)],
+      avatar: AVATAR_OF_AUTHORS[getRandomItemAndDel(AVATAR_OF_AUTHORS)],
     },
 
     offer: {
