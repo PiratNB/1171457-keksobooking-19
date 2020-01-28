@@ -1,19 +1,4 @@
 'use strict';
-var pinsBlock = document.querySelector('.map__pins');
-var blockMap = document.querySelector('.map');
-blockMap.classList.remove('map--faded');
-
-var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-
-function getRandomItem(array) {
-  return Math.floor(Math.random() * array.length);
-}
-
-function getRandomFromTo(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
 var AVATAR_OF_AUTHORS = ['img/avatars/user01.png', 'img/avatars/user02.png', 'img/avatars/user03.png', 'img/avatars/user04.png', 'img/avatars/user05.png', 'img/avatars/user06.png', 'img/avatars/user07.png', 'img/avatars/user08.png'];
 var TITLES = ['Супер предложение', 'Такого вы ещё не видели', 'Лучше, чем сейчас не будет', 'Только попробуй не снять', 'И боги хотели бы тут жить'];
 // var ADDRESS = ['600, 350'];
@@ -26,10 +11,21 @@ var CHECKOUTS = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var DESCS = ['Лучшее место и место, где свершается обладание и проявляет себя силой помысла, — все это дан пример, т. е. в своей непосредственности проявление видимого органа маги. Особенно показателен тут пример звукового созерцания. Звук — это наиболее сильное из проявлений духовного ощущения...', 'Лучшее место? По уставу это никого не касается. В компьютерную игру дело не идет. Только для психотерапевта обязательно. На второй уровень не пускали. Выпускный класс прошли? Ага. Десять встреч в неделю. И получили испытательный сертификат. Запишите. Про три месяца. Отношение ко мне серьезное.', 'Тот самый отель и сейчас стоял в том же самом номере, из окна которого он тогда смотрел на сидящего за круглым столом худого человечка с трубкой во рту. Вдруг он вспомнил: в последний раз во дворе отеля тот говорил что-то о мудром Петре Великом.'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-
 var OBJECTS_AMOUNT = 8;
 
+var pinsBlock = document.querySelector('.map__pins');
+var blockMap = document.querySelector('.map');
+var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 var offers = [];
+
+function getRandomItem(array) {
+  return Math.floor(Math.random() * array.length);
+}
+
+function getRandomFromTo(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 function pullRandomOffer() {
   return {
@@ -98,5 +94,6 @@ function renderPins() {
   pinsBlock.appendChild(fragment);
 }
 
+blockMap.classList.remove('map--faded');
 createObj(OBJECTS_AMOUNT);
 renderPins();
