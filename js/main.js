@@ -98,7 +98,19 @@ function renderCard(map) {
   mapEl.querySelector('.popup__text--address').textContent = map.offer.address;
   mapEl.querySelector('.popup__text--price').textContent = map.offer.price + '₽/ночь';
   mapEl.querySelector('.popup__type').textContent = getEstateTypeTranslate(map);
-  mapEl.querySelector('.popup__text--capacity').textContent = map.offer.rooms + ' комнаты для ' + map.offer.guests + ' гостей';
+
+  var roomsText = 'ы';
+  if (map.offer.rooms < 2) {
+    roomsText = 'а';
+  } else if (map.offer.rooms > 4) {
+    roomsText = '';
+  }
+  var guestsText = 'ей';
+  if (map.offer.guests < 2) {
+    guestsText = 'я';
+  }
+
+  mapEl.querySelector('.popup__text--capacity').textContent = map.offer.rooms + ' комнат' + roomsText + ' для ' + map.offer.guests + ' гост' + guestsText + '.';
   mapEl.querySelector('.popup__text--time').textContent = 'Заезд после ' + map.offer.checkin + ', выезд до ' + map.offer.checkout;
   mapEl.querySelector('.popup__features').querySelectorAll('.popup__feature').textContent = map.offer.features;
   mapEl.querySelector('.popup__description').textContent = map.offer.discription;
