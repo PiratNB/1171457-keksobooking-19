@@ -1,5 +1,4 @@
 'use strict';
-var AVATAR_OF_AUTHORS = ['img/avatars/user01.png', 'img/avatars/user02.png', 'img/avatars/user03.png', 'img/avatars/user04.png', 'img/avatars/user05.png', 'img/avatars/user06.png', 'img/avatars/user07.png', 'img/avatars/user08.png'];
 var TITLES = ['Супер предложение', 'Такого вы ещё не видели', 'Лучше, чем сейчас не будет', 'Только попробуй не снять', 'И боги хотели бы тут жить'];
 // var ADDRESS = ['600, 350'];
 var PRICES = [10000, 50000];
@@ -13,6 +12,7 @@ var DESCS = ['Лучшее место и место, где свершается
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var OBJECTS_AMOUNT = 8;
 
+var AvatarOfAutors = ['img/avatars/user01.png', 'img/avatars/user02.png', 'img/avatars/user03.png', 'img/avatars/user04.png', 'img/avatars/user05.png', 'img/avatars/user06.png', 'img/avatars/user07.png', 'img/avatars/user08.png'];
 var pinsBlock = document.querySelector('.map__pins');
 var blockMap = document.querySelector('.map');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -23,11 +23,11 @@ function getRandomItem(array) {
   return Math.floor(Math.random() * array.length);
 }
 
-function getRandomItemAndDel(array1) {
-  var h = Math.floor(Math.random() * (array1.length - 1));
-  var k = array1[h];
-  array1.splice(h, 1);
-  return k;
+function getRandomArrayWithDeleting(arrayTwo) {
+  var rndIndex = Math.floor(Math.random() * (arrayTwo.length - 1));
+  var rndElem = arrayTwo[rndIndex];
+  arrayTwo.splice(rndIndex, 1);
+  return rndElem;
 }
 
 function getRandomFromTo(min, max) {
@@ -37,7 +37,7 @@ function getRandomFromTo(min, max) {
 function pullRandomOffer() {
   return {
     author: {
-      avatar: AVATAR_OF_AUTHORS[getRandomItemAndDel(AVATAR_OF_AUTHORS)],
+      avatar: getRandomArrayWithDeleting(AvatarOfAutors),
     },
 
     offer: {
@@ -61,6 +61,21 @@ function pullRandomOffer() {
   };
 }
 
+var getEstateTypeTranslate = function (currentObject) {
+  switch (currentObject.offer.type) {
+    case 'flat':
+      return 'Квартира';
+    case 'bungalo':
+      return 'Бунгало';
+    case 'house':
+      return 'Дом';
+    case 'palace':
+      return 'Дворец';
+    default:
+      return 'Шалаш';
+  }
+};
+
 function createOfferObject(numbers) {
   for (var i = 0; i < numbers; i++) {
     offers.push(pullRandomOffer());
@@ -82,7 +97,7 @@ function renderCard(map) {
   mapEl.querySelector('.popup__title').textContent = map.offer.title;
   mapEl.querySelector('.popup__text--address').textContent = map.offer.address;
   mapEl.querySelector('.popup__text--price').textContent = map.offer.price + '₽/ночь';
-  mapEl.querySelector('.popup__type').textContent = map.offer.type;
+  mapEl.querySelector('.popup__type').textContent = getEstateTypeTranslate(map);
   mapEl.querySelector('.popup__text--capacity').textContent = map.offer.rooms + ' комнаты для ' + map.offer.guests + ' гостей';
   mapEl.querySelector('.popup__text--time').textContent = 'Заезд после ' + map.offer.checkin + ', выезд до ' + map.offer.checkout;
   mapEl.querySelector('.popup__features').querySelectorAll('.popup__feature').textContent = map.offer.features;
