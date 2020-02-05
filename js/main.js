@@ -11,13 +11,105 @@ var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditio
 var DESCS = ['Лучшее место и место, где свершается обладание и проявляет себя силой помысла, — все это дан пример, т. е. в своей непосредственности проявление видимого органа маги. Особенно показателен тут пример звукового созерцания. Звук — это наиболее сильное из проявлений духовного ощущения...', 'Лучшее место? По уставу это никого не касается. В компьютерную игру дело не идет. Только для психотерапевта обязательно. На второй уровень не пускали. Выпускный класс прошли? Ага. Десять встреч в неделю. И получили испытательный сертификат. Запишите. Про три месяца. Отношение ко мне серьезное.', 'Тот самый отель и сейчас стоял в том же самом номере, из окна которого он тогда смотрел на сидящего за круглым столом худого человечка с трубкой во рту. Вдруг он вспомнил: в последний раз во дворе отеля тот говорил что-то о мудром Петре Великом.'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var OBJECTS_AMOUNT = 8;
+var ENTER_KEY = 'Enter';
 
-var AvatarOfAutors = ['img/avatars/user01.png', 'img/avatars/user02.png', 'img/avatars/user03.png', 'img/avatars/user04.png', 'img/avatars/user05.png', 'img/avatars/user06.png', 'img/avatars/user07.png', 'img/avatars/user08.png'];
+var avatarOfAutors = ['img/avatars/user01.png', 'img/avatars/user02.png', 'img/avatars/user03.png', 'img/avatars/user04.png', 'img/avatars/user05.png', 'img/avatars/user06.png', 'img/avatars/user07.png', 'img/avatars/user08.png'];
 var pinsBlock = document.querySelector('.map__pins');
 var blockMap = document.querySelector('.map');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+// var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 var offers = [];
+var mainPin = document.querySelector('.map__pin--main');
+var address = document.getElementById('address');
+var form = document.querySelector('.ad-form');
+var filterForm = document.querySelectorAll('.map__filters > *');
+var formElements = form.querySelectorAll('fieldset');
+var MainPin = {
+  WIDTH: 65,
+  HEIGHT: 65,
+  PIN_TAIL: 22,
+  LEFT_DEFAULT: 570,
+  TOP_DEFAULT: 375
+};
+var RoomsNumber = {
+  '1': [1],
+  '2': [1, 2],
+  '3': [1, 2, 3],
+  '100': [0]
+};
+var capacitySelection = document.getElementById('capacity');
+var capacityOptions = capacitySelection.querySelectorAll('option');
+var roomSelection = document.getElementById('room_number');
+var fragment = document.createDocumentFragment();
+offers.forEach(function (offerPin) {
+  fragment.appendChild(renderPin(offerPin));
+});
+
+// Переводит страницу в неактивное состояние
+var setInactiveState = function () {
+  blockMap.classList.add('map--faded');
+  form.classList.add('ad-form--disabled');
+  filterForm.forEach(function (fieldset) {
+    fieldset.disabled = true;
+  });
+  formElements.forEach(function (element) {
+    element.disabled = true;
+  });
+  mainPin.style.left = MainPin.LEFT_DEFAULT + 'px';
+  mainPin.style.top = MainPin.TOP_DEFAULT + 'px';
+  address.value = MainPin.LEFT_DEFAULT + (Math.round(MainPin.WIDTH / 2)) + ', ' + (MainPin.TOP_DEFAULT + Math.round(MainPin.HEIGHT / 2));
+};
+setInactiveState();
+
+// Переводит страницу в активное состояние
+var setActiveState = function () {
+  blockMap.classList.remove('map--faded');
+  form.classList.remove('ad-form--disabled');
+  formElements.forEach(function (element) {
+    element.disabled = false;
+  });
+  filterForm.forEach(function (fieldset) {
+    fieldset.disabled = false;
+  });
+  address.value = MainPin.LEFT_DEFAULT + (Math.round(MainPin.WIDTH / 2)) + ', ' + (MainPin.TOP_DEFAULT + MainPin.HEIGHT + MainPin.PIN_TAIL);
+  pinsBlock.appendChild(fragment);
+};
+
+mainPin.addEventListener('mousedown', function (evt) {
+  if (evt.button === 0) {
+    setActiveState();
+  }
+});
+
+mainPin.addEventListener('keydown', function (evt) {
+  if (evt.key === ENTER_KEY) {
+    setActiveState();
+  }
+});
+
+
+// Задаёт выбор количества гостей в соответствии с количеством комнат
+var filterCapacity = function (value) {
+
+  capacityOptions.forEach(function (option) {
+    option.disabled = true;
+  });
+
+  RoomsNumber[value].forEach(function (roomOption) {
+    capacityOptions.forEach(function (capacity) {
+      if (+capacity.value === roomOption) {
+        capacity.disabled = false;
+        capacity.selected = true;
+      }
+    });
+  });
+};
+
+roomSelection.addEventListener('change', function (evt) {
+  filterCapacity(evt.target.value);
+});
+
+filterCapacity(roomSelection.value);
 
 function getRandomItem(array) {
   return Math.floor(Math.random() * array.length);
@@ -37,7 +129,7 @@ function getRandomFromTo(min, max) {
 function pullRandomOffer() {
   return {
     author: {
-      avatar: getRandomArrayWithDeleting(AvatarOfAutors),
+      avatar: getRandomArrayWithDeleting(avatarOfAutors),
     },
 
     offer: {
@@ -61,6 +153,7 @@ function pullRandomOffer() {
   };
 }
 
+/**
 var getEstateTypeTranslate = function (currentObject) {
   switch (currentObject.offer.type) {
     case 'flat':
@@ -75,6 +168,7 @@ var getEstateTypeTranslate = function (currentObject) {
       return 'Шалаш';
   }
 };
+*/
 
 function createOfferObject(numbers) {
   for (var i = 0; i < numbers; i++) {
@@ -90,7 +184,7 @@ function renderPin(offer) {
   pinEl.querySelector('img').alt = offer.offer.title;
   return pinEl;
 }
-
+/**
 function renderCard(map) {
   var mapEl = cardTemplate.cloneNode(true);
 
@@ -127,7 +221,7 @@ function renderPins() {
   }
   pinsBlock.appendChild(fragment);
 }
+*/
 
-blockMap.classList.remove('map--faded');
 createOfferObject(OBJECTS_AMOUNT);
-renderPins();
+// renderPins();
