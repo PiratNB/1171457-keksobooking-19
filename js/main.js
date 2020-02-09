@@ -40,10 +40,6 @@ var RoomsNumber = {
 var capacitySelection = document.getElementById('capacity');
 var capacityOptions = capacitySelection.querySelectorAll('option');
 var roomSelection = document.getElementById('room_number');
-var fragment = document.createDocumentFragment();
-offers.forEach(function (offerPin) {
-  fragment.appendChild(renderPin(offerPin));
-});
 
 // Переводит страницу в неактивное состояние
 var setInactiveState = function () {
@@ -97,13 +93,18 @@ var filterCapacity = function (value) {
 
   RoomsNumber[value].forEach(function (roomOption) {
     capacityOptions.forEach(function (capacity) {
-      if (+capacity.value === roomOption) {
+      if (Number(capacity.value) === roomOption) {
         capacity.disabled = false;
         capacity.selected = true;
       }
     });
   });
 };
+
+var fragment = document.createDocumentFragment();
+offers.forEach(function (offerPin) {
+  fragment.appendChild(renderPin(offerPin));
+});
 
 roomSelection.addEventListener('change', function (evt) {
   filterCapacity(evt.target.value);
